@@ -10,7 +10,17 @@ enum WorkspacePage: String, CaseIterable, Identifiable {
 
 @MainActor
 final class DeskModel: ObservableObject {
-    @Published var query = "" { didSet { if oldValue != query { refresh() } } }
+    @Published var query = "" {
+        didSet {
+            guard oldValue != query else { return }
+            if !query.isEmpty {
+                shapeTask?.cancel()
+                computingMatches = false
+                shapeMatches = nil
+            }
+            refresh()
+        }
+    }
     @Published var scope: CharacterScope
     @Published var selectedFace: FontFace?
     @Published var selection: CharacterEntry? { didSet { if oldValue?.id != selection?.id { inspect() } } }
@@ -49,6 +59,7 @@ final class DeskModel: ObservableObject {
     private var entries: [CharacterEntry] = []
     private var symbols: [CharacterEntry] = []
     private var shapeIndex: [IndexedShape] = []
+    private var shapeIndexKey: String?
     private var catalogTask: Task<Void, Never>?
     private var workingTask: Task<Void, Never>?
     private var coverageTask: Task<Void, Never>?
@@ -134,6 +145,11 @@ final class DeskModel: ObservableObject {
     }
 
     func pickFace(_ face: FontFace, rememberForTarget: Bool = true) {
+        if scope == .face || scope == .glyphs {
+            shapeTask?.cancel()
+            computingMatches = false
+            shapeMatches = nil
+        }
         selectedFace = face
         preferences.lastFace = face.id
         preferences.familyFaces[face.family] = face.id
@@ -155,6 +171,8 @@ final class DeskModel: ObservableObject {
     }
 
     func pickScope(_ scope: CharacterScope) {
+        shapeTask?.cancel()
+        computingMatches = false
         self.scope = scope
         preferences.lastScope = scope
         shapeMatches = nil
@@ -249,6 +267,8 @@ final class DeskModel: ObservableObject {
     }
 
     func clearSearch() {
+        shapeTask?.cancel()
+        computingMatches = false
         query = ""
         shapeMatches = nil
         refresh()
@@ -261,6 +281,10 @@ final class DeskModel: ObservableObject {
         faceEntries.removeAll()
         installedCoverage = nil
         shapeIndex.removeAll()
+        shapeTask?.cancel()
+        shapeMatches = nil
+        computingMatches = false
+        makingShapeIndex = false
         shapeBuildTask?.cancel()
         shapeBuildTask = nil
         refresh()
@@ -381,8 +405,9 @@ final class DeskModel: ObservableObject {
             return
         }
         let compact = paletteIsVisible?() ?? true
+        let destination = target
         Task {
-            let result = await insertion.insert(payload, into: target) { dismissForInsert?() }
+            let result = await insertion.insert(payload, into: destination) { dismissForInsert?() }
             switch result {
             case .posted:
                 preferences.recents.removeAll { $0.id == entry.id }
@@ -435,6 +460,10 @@ final class DeskModel: ObservableObject {
 
     func loadLayout(_ document: LayoutDocument) throws {
         _ = try LayoutProgram(document.contents)
+        guard !standardLayouts.contains(document.name),
+              !preferences.layouts.contains(where: { $0.name == document.name && $0.id != document.id }) else {
+            throw LayoutError(line: 1, message: "A layout with this name already exists.")
+        }
         if let index = preferences.layouts.firstIndex(where: { $0.id == document.id }) {
             let oldName = preferences.layouts[index].name
             preferences.layouts[index] = document
@@ -445,9 +474,6 @@ final class DeskModel: ObservableObject {
                 }
             }
         } else {
-            guard !layoutChoices.contains(document.name) else {
-                throw LayoutError(line: 1, message: "A layout with this name already exists.")
-            }
             preferences.layouts.append(document)
         }
         pickLayout(document.name)
@@ -478,10 +504,25 @@ final class DeskModel: ObservableObject {
         let preferred = selectedFace
         let catalog = catalog
         let base = entries
+        let searchScope = scope
+        let faceOnly = searchScope == .face || searchScope == .glyphs
+        let key = faceOnly ? "\(searchScope.rawValue)/\(preferred?.id ?? "")" : "Installed fonts"
+        if shapeIndexKey != key {
+            shapeBuildTask?.cancel()
+            shapeBuildTask = nil
+            shapeIndex = []
+            shapeIndexKey = key
+        }
         if shapeIndex.isEmpty && shapeBuildTask == nil {
             makingShapeIndex = true
             shapeBuildTask = Task.detached(priority: .userInitiated) {
                 let values = base.isEmpty ? catalog?.all() ?? [] : base
+                if faceOnly, let preferred {
+                    let faceEntries = library.entriesForFace(preferred, catalogEntries: values,
+                                                              allGlyphs: searchScope == .glyphs)
+                    return ShapeIndex.build(entries: faceEntries, fonts: library, preferred: preferred,
+                                            selectedFaceOnly: true)
+                }
                 let union = library.unionCoverage()
                 let installed = values.filter { value in
                     guard value.category != "Cc", value.category != "Cf", let code = value.scalars.first,
@@ -500,16 +541,8 @@ final class DeskModel: ObservableObject {
                 makingShapeIndex = false
             }
             let templates = shapeIndex
-            let current = scope
             let result = await Task.detached(priority: .userInitiated) {
-                let scoped: [IndexedShape]
-                if current == .face || current == .glyphs, let preferred {
-                    let snapshot = library.support(for: preferred)
-                    scoped = templates.filter { library.covers($0.entry, in: snapshot) }
-                } else {
-                    scoped = templates
-                }
-                return ShapeIndex.matches(queryShape, index: scoped, excluding: excluding)
+                ShapeIndex.matches(queryShape, index: templates, excluding: excluding)
             }.value
             guard !Task.isCancelled else { return }
             query = ""

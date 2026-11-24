@@ -47,6 +47,37 @@ struct ShapeSample: Codable {
         componentCount = Self.components(pixels)
     }
 
+    init?(line: CTLine) {
+        let inkBounds = CTLineGetImageBounds(line, nil)
+        let bounds = inkBounds.isEmpty ? CTLineGetBoundsWithOptions(line, []) : inkBounds
+        guard !bounds.isNull, !bounds.isInfinite, !bounds.isEmpty else { return nil }
+        let side = Self.dimension
+        let maxSide = max(bounds.width, bounds.height)
+        let scale = CGFloat(side - 4) / maxSide
+        let x = (CGFloat(side) - bounds.width * scale) / 2 - bounds.minX * scale
+        let y = (CGFloat(side) - bounds.height * scale) / 2 - bounds.minY * scale
+        var raster = [UInt8](repeating: 0, count: Self.length * 4)
+        let recorded = raster.withUnsafeMutableBytes { buffer -> Bool in
+            guard let context = CGContext(data: buffer.baseAddress, width: side, height: side, bitsPerComponent: 8,
+                                          bytesPerRow: side * 4, space: CGColorSpaceCreateDeviceRGB(),
+                                          bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+                                              | CGBitmapInfo.byteOrder32Big.rawValue)
+            else { return false }
+            context.translateBy(x: x, y: y)
+            context.scaleBy(x: scale, y: scale)
+            context.textMatrix = .identity
+            context.textPosition = .zero
+            CTLineDraw(line, context)
+            return true
+        }
+        guard recorded else { return nil }
+        let pixels = (0..<Self.length).filter { raster[$0 * 4 + 3] > 75 }
+        guard !pixels.isEmpty else { return nil }
+        positions = pixels.map(UInt16.init)
+        aspect = Float((bounds.width + maxSide * 0.08) / (bounds.height + maxSide * 0.08))
+        componentCount = Self.components(pixels)
+    }
+
     init?(strokes: [Stroke]) {
         let path = CGMutablePath()
         for stroke in strokes {
@@ -121,9 +152,10 @@ enum ShapeIndex {
         sample(for: entry, font: face.font(size: 64))
     }
 
-    static func build(entries: [CharacterEntry], fonts: FontLibrary, preferred: FontFace?) -> [IndexedShape] {
+    static func build(entries: [CharacterEntry], fonts: FontLibrary, preferred: FontFace?,
+                      selectedFaceOnly: Bool = false) -> [IndexedShape] {
         let preferredSupport = preferred.map(fonts.support)
-        let support = fonts.supports()
+        let support = selectedFaceOnly ? [] : fonts.supports()
         let fontsForSearch = (preferredSupport.map { [$0] } ?? []) + support
         var result: [IndexedShape] = []
         result.reserveCapacity(min(entries.count, 80_000))
@@ -192,6 +224,6 @@ enum ShapeIndex {
                 if let piece = CTFontCreatePathForGlyph(font, glyph, &transform) { path.addPath(piece) }
             }
         }
-        return ShapeSample(path: path, fill: true)
+        return path.isEmpty ? ShapeSample(line: line) : ShapeSample(path: path, fill: true)
     }
 }

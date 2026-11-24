@@ -162,6 +162,21 @@ final class GlyphDeskTests: XCTestCase {
         XCTAssertTrue(markMatches.contains { $0.text == "※" }, "\(markMatches.map { $0.text })")
     }
 
+    func testShapeSearchIndexesColorEmojiAndFontGlyphIDs() throws {
+        let library = FontLibrary()
+        let entries = try catalog()
+        let emojiFace = try XCTUnwrap(library.faces.first { $0.id == "AppleColorEmoji" })
+        let emoji = try XCTUnwrap(entries.entry([0x1F600]))
+        XCTAssertNotNil(ShapeIndex.sample(for: emoji, face: emojiFace))
+
+        let face = try XCTUnwrap(library.faces.first { $0.id == "Helvetica" })
+        let glyph = try XCTUnwrap(directGlyph("Q", in: face.font(size: 24)))
+        let unmapped = CharacterEntry(scalars: [], name: "Test font glyph", block: "Glyph indexes",
+                                      category: "Unencoded", faceName: face.id, glyphID: glyph)
+        let index = ShapeIndex.build(entries: [unmapped], fonts: library, preferred: face, selectedFaceOnly: true)
+        XCTAssertEqual(index.map(\.entry).first, unmapped)
+    }
+
     @MainActor
     func testNativeWorkspaceAndAllInsertionFormats() async throws {
         let model = DeskModel()
