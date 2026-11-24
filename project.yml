@@ -1,0 +1,83 @@
+name: GlyphDesk
+options:
+  deploymentTarget:
+    macOS: "13.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  GlyphDesk:
+    type: application
+    platform: macOS
+    sources:
+      - Sources/App
+      - Sources/Model
+      - Sources/System
+      - Sources/Views
+      - path: Resources
+        buildPhase: resources
+    dependencies:
+      - sdk: libsqlite3.tbd
+      - sdk: Carbon.framework
+      - target: GlyphDeskLookup
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.nearfuturelaboratory.glyphdesk
+        INFOPLIST_FILE: Config/Info.plist
+        ENABLE_HARDENED_RUNTIME: YES
+    postBuildScripts:
+      - name: Build offline Unicode catalog
+        script: |
+          set -eu
+          mkdir -p "$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH"
+          mkdir -p "$TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Helpers"
+          /usr/bin/install -m 755 "$BUILT_PRODUCTS_DIR/glyphdesk" "$TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Helpers/glyphdesk"
+          /usr/bin/python3 "$SRCROOT/Scripts/build_catalog.py" "$SRCROOT/Data/Reference" "$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/Unicode.sqlite3"
+        inputFiles:
+          - $(BUILT_PRODUCTS_DIR)/glyphdesk
+          - $(SRCROOT)/Scripts/build_catalog.py
+          - $(SRCROOT)/Data/Reference/catalog-source.zip
+        outputFiles:
+          - $(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Unicode.sqlite3
+          - $(TARGET_BUILD_DIR)/$(CONTENTS_FOLDER_PATH)/Helpers/glyphdesk
+  GlyphDeskLookup:
+    type: tool
+    platform: macOS
+    sources:
+      - Sources/CLI
+      - Sources/Model/UnicodeCatalog.swift
+      - Sources/Model/CharacterEntry.swift
+    dependencies:
+      - sdk: libsqlite3.tbd
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.nearfuturelaboratory.glyphdesk.lookup
+        PRODUCT_NAME: glyphdesk
+        PRODUCT_MODULE_NAME: GlyphDeskLookup
+  GlyphDeskTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: [Tests]
+    dependencies:
+      - target: GlyphDesk
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.nearfuturelaboratory.glyphdesk.tests
+schemes:
+  GlyphDesk:
+    build:
+      targets:
+        GlyphDesk: all
+        GlyphDeskLookup: all
+    test:
+      targets: [GlyphDeskTests]
+    run:
+      config: Debug
