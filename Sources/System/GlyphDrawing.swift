@@ -37,9 +37,16 @@ enum GlyphDrawing {
         let fitted = !guides && tightBounds.width > frame.width * 0.89 && tightBounds.width > 0 ? frame.width * 0.89 / tightBounds.width : 1
         let baseline = guides ? frame.minY + frame.height * 0.30 : frame.midY - tightBounds.midY * fitted
 
+        let originalTextMatrix = context.textMatrix
+        let originalTextPosition = context.textPosition
         context.saveGState()
-        defer { context.restoreGState() }
+        defer {
+            context.restoreGState()
+            context.textMatrix = originalTextMatrix
+            context.textPosition = originalTextPosition
+        }
         context.clip(to: frame)
+        context.textMatrix = .identity
         if guides {
             drawGuides(font, baseline: baseline, frame: frame, context: context, fitted: fitted)
         }
@@ -86,7 +93,8 @@ enum GlyphDrawing {
         ]
         let lineColor = NSColor.secondaryLabelColor.withAlphaComponent(0.35).cgColor
         let labelColor = NSColor.secondaryLabelColor.cgColor
-        for (label, offset) in heights {
+        var previousLabelY = frame.maxY
+        for (label, offset) in heights.sorted(by: { $0.1 > $1.1 }) {
             let y = baseline + offset * fitted
             guard y > frame.minY + 3, y < frame.maxY - 12 else { continue }
             context.setStrokeColor(lineColor)
@@ -95,12 +103,15 @@ enum GlyphDrawing {
             context.move(to: CGPoint(x: frame.minX + 3, y: y))
             context.addLine(to: CGPoint(x: frame.maxX - 3, y: y))
             context.strokePath()
+            let labelY = min(y + 2, previousLabelY - 11)
+            guard labelY >= frame.minY + 2 else { continue }
+            previousLabelY = labelY
             let line = CTLineCreateWithAttributedString(NSAttributedString(
                 string: String(localized: String.LocalizationValue(label)), attributes: [
                     fontKey: CTFontCreateUIFontForLanguage(.miniSystem, 8, nil)!,
                     NSAttributedString.Key(kCTForegroundColorAttributeName as String): labelColor
                 ]))
-            context.textPosition = CGPoint(x: frame.minX + 7, y: y + 2)
+            context.textPosition = CGPoint(x: frame.minX + 7, y: labelY)
             CTLineDraw(line, context)
         }
     }

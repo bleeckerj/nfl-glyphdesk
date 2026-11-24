@@ -116,6 +116,22 @@ final class GlyphDeskTests: XCTestCase {
         XCTAssertEqual(PDFDocument(data: sheet)?.pageCount, 2)
     }
 
+    func testGuidesPreserveTheCallingContextsTextState() throws {
+        let face = try XCTUnwrap(FontLibrary().faces.first { $0.id == "Helvetica" })
+        let character = try XCTUnwrap(catalog().entry([0x26]))
+        let context = try XCTUnwrap(CGContext(data: nil, width: 256, height: 192, bitsPerComponent: 8,
+                                              bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(),
+                                              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+        context.textMatrix = CGAffineTransform(scaleX: 1, y: -1)
+        context.textPosition = CGPoint(x: 12, y: 18)
+        let initialMatrix = context.textMatrix
+        let initialPosition = context.textPosition
+        GlyphDrawing.draw(character, face: face, in: CGRect(x: 0, y: 0, width: 256, height: 192),
+                          context: context, color: CGColor(gray: 0, alpha: 1), guides: true)
+        XCTAssertEqual(context.textMatrix, initialMatrix)
+        XCTAssertEqual(context.textPosition, initialPosition)
+    }
+
     func testClipboardSnapshotDoesNotReplaceAConcurrentCopy() throws {
         let pasteboard = NSPasteboard.withUniqueName()
         defer { pasteboard.releaseGlobally() }

@@ -23,10 +23,13 @@ targets:
       - Sources/Views
       - path: Resources
         buildPhase: resources
+      - path: LICENSE
+        buildPhase: resources
     dependencies:
       - sdk: libsqlite3.tbd
       - sdk: Carbon.framework
       - target: GlyphDeskLookup
+        embed: false
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.nearfuturelaboratory.glyphdesk

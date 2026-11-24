@@ -1,0 +1,7 @@
+Glyph Desk includes character names, properties, and annotations from Unicode 18.0, Emoji 18.0, CLDR 49, and Unihan. The bundled search database indexes and combines those sources. See the accompanying Unicode license and https://www.unicode.org/license.txt.
+
+The HTML named character references come from the WHATWG HTML Standard. Glyph Desk converts the named character references JSON into a SQLite lookup table.
+
+Source: https://html.spec.whatwg.org/multipage/named-characters.html
+Copyright © WHATWG (Apple, Google, Mozilla, Microsoft).
+The accompanying WHATWG HTML license describes the terms for this data.
