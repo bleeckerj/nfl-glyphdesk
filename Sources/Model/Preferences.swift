@@ -24,6 +24,25 @@ enum Corner: String, Codable, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
+enum LauncherMode: String, Codable, CaseIterable, Identifiable {
+    case menuBar = "Menu bar", cornerButton = "Corner button", both = "Both"
+
+    var id: String { rawValue }
+    var showsMenuBar: Bool { self != .cornerButton }
+    var showsCornerButton: Bool { self != .menuBar }
+}
+
+enum CornerButtonPosition: String, Codable, CaseIterable, Identifiable {
+    case topLeft = "Top left", topRight = "Top right"
+
+    var id: String { rawValue }
+}
+
+struct LauncherPreferences: Codable, Equatable {
+    var mode: LauncherMode = .menuBar
+    var corner: CornerButtonPosition = .topLeft
+}
+
 struct Preferences: Codable {
     var favorites: [CharacterEntry] = []
     var recents: [CharacterEntry] = []
@@ -40,6 +59,7 @@ struct Preferences: Codable {
     var htmlStyle: EntityStyle = .named
     var hotkey: HotkeyPreference? = HotkeyPreference()
     var corner: Corner = .off
+    private var savedLauncher: LauncherPreferences?
     var keepPaletteOpen = false
     var magnifier = false
     var compactByDefault = true
@@ -48,6 +68,11 @@ struct Preferences: Codable {
     var proofPreset = "Alphabet"
     var proofSize = 28.0
     var proofAllSizes = false
+
+    var launcher: LauncherPreferences {
+        get { savedLauncher ?? LauncherPreferences() }
+        set { savedLauncher = newValue }
+    }
 
     static var url: URL {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]

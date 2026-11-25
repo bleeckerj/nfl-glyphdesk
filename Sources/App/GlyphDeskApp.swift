@@ -15,7 +15,9 @@ struct GlyphDeskApp: App {
 @MainActor
 final class DeskDelegate: NSObject, NSApplicationDelegate {
     lazy var model = DeskModel()
-    private var statusItem: NSStatusItem?
+    private lazy var launchers = ActivationLaunchers(onOpen: { [weak self] in self?.toggleDefault() }) { [weak self] in
+        self?.activationMenu() ?? NSMenu()
+    }
     private var palette: NSPanel?
     private var workspace: NSWindow?
     private var preferencesWindow: NSWindow?
@@ -41,18 +43,10 @@ final class DeskDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
-        let status = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        status.button?.image = NSImage(systemSymbolName: "character.book.closed", accessibilityDescription: "Glyph Desk")
-            ?? NSImage(systemSymbolName: "textformat", accessibilityDescription: "Glyph Desk")
-        status.button?.toolTip = "Glyph Desk"
-        status.button?.target = self
-        status.button?.action = #selector(statusClicked)
-        status.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
-        statusItem = status
-
         model.dismissForInsert = { [weak self] in self?.hideWindows() }
         model.reopenAfterInsert = { [weak self] compact in self?.show(compact: compact, retarget: false) }
         model.paletteIsVisible = { [weak self] in self?.palette?.isVisible ?? false }
+        configureLaunchers()
         configureActivation()
         localEvents = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             self?.handle(event) ?? event
@@ -69,6 +63,7 @@ final class DeskDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         model.saveImmediately()
+        launchers.close()
         if let localEvents { NSEvent.removeMonitor(localEvents) }
         if let applicationObserver { NSWorkspace.shared.notificationCenter.removeObserver(applicationObserver) }
         cornerTimer?.invalidate()
@@ -90,6 +85,10 @@ final class DeskDelegate: NSObject, NSApplicationDelegate {
         }
         NSApp.activate(ignoringOtherApps: true)
         preferencesWindow?.makeKeyAndOrderFront(nil)
+    }
+
+    func configureLaunchers() {
+        launchers.update(model.preferences.launcher)
     }
 
     func configureActivation() {
@@ -117,19 +116,15 @@ final class DeskDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    @objc private func statusClicked() {
-        if NSApp.currentEvent?.type == .rightMouseUp, let button = statusItem?.button {
-            let menu = NSMenu()
-            for (title, action) in [("Open Palette", #selector(menuPalette)), ("Open Workspace", #selector(menuWorkspace)),
-                                    ("Settings…", #selector(menuSettings)), ("Quit Glyph Desk", #selector(quit))] {
-                let item = NSMenuItem(title: String(localized: String.LocalizationValue(title)), action: action, keyEquivalent: "")
-                item.target = self
-                menu.addItem(item)
-            }
-            menu.popUp(positioning: nil, at: CGPoint(x: 0, y: button.bounds.maxY + 4), in: button)
-        } else {
-            toggleDefault()
+    private func activationMenu() -> NSMenu {
+        let menu = NSMenu()
+        for (title, action) in [("Open Palette", #selector(menuPalette)), ("Open Workspace", #selector(menuWorkspace)),
+                                ("Settings…", #selector(menuSettings)), ("Quit Glyph Desk", #selector(quit))] {
+            let item = NSMenuItem(title: String(localized: String.LocalizationValue(title)), action: action, keyEquivalent: "")
+            item.target = self
+            menu.addItem(item)
         }
+        return menu
     }
 
     @objc private func menuPalette() { openPalette() }

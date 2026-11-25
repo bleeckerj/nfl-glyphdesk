@@ -90,7 +90,13 @@
 "Insertion" = "Insertion";
 "Browsing" = "Browsing";
 "Global shortcut" = "Global shortcut";
-"Screen corner" = "Screen corner";
+"Show Glyph Desk in" = "Show Glyph Desk in";
+"Menu bar" = "Menu bar";
+"Corner button" = "Corner button";
+"Both" = "Both";
+"Button position" = "Button position";
+"Hot corner (hover)" = "Hot corner (hover)";
+"Open Glyph Desk" = "Open Glyph Desk";
 "Off" = "Off";
 "Top left" = "Top left";
 "Top right" = "Top right";

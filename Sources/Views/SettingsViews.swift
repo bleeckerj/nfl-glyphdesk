@@ -13,6 +13,18 @@ struct DeskSettings: View {
     var body: some View {
         Form {
             Section("Activation") {
+                Picker("Show Glyph Desk in", selection: $model.preferences.launcher.mode) {
+                    ForEach(LauncherMode.allCases) { mode in
+                        Text(LocalizedStringKey(mode.rawValue)).tag(mode)
+                    }
+                }
+                if model.preferences.launcher.mode.showsCornerButton {
+                    Picker("Button position", selection: $model.preferences.launcher.corner) {
+                        ForEach(CornerButtonPosition.allCases) { position in
+                            Text(LocalizedStringKey(position.rawValue)).tag(position)
+                        }
+                    }
+                }
                 HStack {
                     Text("Global shortcut")
                     Spacer()
@@ -35,7 +47,7 @@ struct DeskSettings: View {
                     }
                     .frame(width: 1, height: 1)
                 }
-                Picker("Screen corner", selection: $model.preferences.corner) {
+                Picker("Hot corner (hover)", selection: $model.preferences.corner) {
                     ForEach(Corner.allCases) { corner in
                         Text(LocalizedStringKey(corner.rawValue)).tag(corner)
                     }
@@ -93,6 +105,7 @@ struct DeskSettings: View {
             }
         }
         .formStyle(.grouped)
+        .onChange(of: model.preferences.launcher) { _ in delegate.configureLaunchers() }
         .frame(width: 530, height: 555)
         .safeAreaInset(edge: .bottom, spacing: 0) { MessageBar(model: model) }
     }

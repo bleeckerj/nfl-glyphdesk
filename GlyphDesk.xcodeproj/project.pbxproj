@@ -41,6 +41,7 @@
 		CB9BD81FA0026FD4113B3DDC /* ShapeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349D43BB16401B9BD487D6CE /* ShapeSheet.swift */; };
 		EFEAD3826291DD8322CE6C3D /* SystemSymbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4006635ACAC167C740E227 /* SystemSymbols.swift */; };
 		F7869CF04D6542A776D86979 /* ProofOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1C722451F04CDE518CF209 /* ProofOutput.swift */; };
+		FB4C8B998B6034B0B0EC85A4 /* ActivationLaunchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6935A35F5B4C3E9F63663A6C /* ActivationLaunchers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 		349D43BB16401B9BD487D6CE /* ShapeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeSheet.swift; sourceTree = "<group>"; };
 		392E37F453E2ED302DC82D9A /* Unicode.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Unicode.txt; sourceTree = "<group>"; };
 		3DCE3D575F22A2D554275F6E /* UnicodeCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnicodeCatalog.swift; sourceTree = "<group>"; };
+		6935A35F5B4C3E9F63663A6C /* ActivationLaunchers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationLaunchers.swift; sourceTree = "<group>"; };
 		6CF57EC5A93108E1C34902E4 /* WHATWG-HTML.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "WHATWG-HTML.txt"; sourceTree = "<group>"; };
 		6F2BECB243470CBB5505FBEB /* CharacterGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterGrid.swift; sourceTree = "<group>"; };
 		7C43456A809E7D03142D2C7E /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
@@ -230,6 +232,7 @@
 		D9C4DFC1753E4FCDA24F87EC /* App */ = {
 			isa = PBXGroup;
 			children = (
+				6935A35F5B4C3E9F63663A6C /* ActivationLaunchers.swift */,
 				99F3BF64172537D04B930603 /* DeskModel.swift */,
 				A0848CAB20DDF2A14AA11F1A /* GlyphDeskApp.swift */,
 			);
@@ -392,6 +395,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB4C8B998B6034B0B0EC85A4 /* ActivationLaunchers.swift in Sources */,
 				AA668AA16D1E3CE72DE9ECE5 /* BrowseData.swift in Sources */,
 				2016BE68FE186CBC7EA77F1D /* BrowserViews.swift in Sources */,
 				80928AF0E11458FC49FADB40 /* CharacterEntry.swift in Sources */,

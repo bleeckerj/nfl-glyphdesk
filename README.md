@@ -33,6 +33,8 @@ Glyph Desk supports macOS 13 or later. The universal download includes Apple Sil
 2. Open Glyph Desk and click its menu bar icon or press **Control–Option–Space**.
 3. Search for a character. Open **Workspace** to browse fonts, inspect details, compare faces, or make a proof.
 
+In **Settings → Activation**, set **Show Glyph Desk in** to **Menu bar**, **Corner button**, or **Both**. With the corner button enabled, choose **Top left** or **Top right** under **Button position**. Right-click either launcher to open Settings, the workspace, or the palette.
+
 Copy is available immediately. To insert directly at the cursor in another app, grant Accessibility access in Glyph Desk’s Settings. On macOS versions with pasteboard privacy controls, allow clipboard access for restoring a previous clipboard after insertion.
 
 ## Building from source

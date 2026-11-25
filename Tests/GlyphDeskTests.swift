@@ -225,6 +225,51 @@ final class GlyphDeskTests: XCTestCase {
         if case .posted = refusal { XCTFail("An absent destination must never receive an insertion.") }
     }
 
+    @MainActor
+    func testActivationLaunchersUpdateAndShareTheOpenAction() async throws {
+        let visibleFrame = try XCTUnwrap(NSScreen.screens.first).visibleFrame
+        var clicks = 0
+        let launchers = ActivationLaunchers(onOpen: { clicks += 1 }) {
+            let menu = NSMenu()
+            menu.addItem(NSMenuItem(title: "Settings…", action: nil, keyEquivalent: ""))
+            return menu
+        }
+        defer { launchers.close() }
+
+        launchers.update(LauncherPreferences())
+        let menuBarItem = try XCTUnwrap(launchers.menuBarItem)
+        XCTAssertNil(launchers.cornerPanel)
+        menuBarItem.button?.performClick(nil)
+        XCTAssertEqual(clicks, 1)
+
+        launchers.update(LauncherPreferences(mode: .both, corner: .topLeft))
+        let panel = try XCTUnwrap(launchers.cornerPanel)
+        XCTAssertTrue(launchers.menuBarItem === menuBarItem)
+        XCTAssertTrue(panel.isVisible)
+        XCTAssertTrue(panel.styleMask.contains(.nonactivatingPanel))
+        XCTAssertGreaterThanOrEqual(panel.frame.minX, visibleFrame.minX)
+        XCTAssertLessThan(panel.frame.minX - visibleFrame.minX, 10)
+        XCTAssertGreaterThanOrEqual(visibleFrame.maxY, panel.frame.maxY)
+        XCTAssertLessThan(visibleFrame.maxY - panel.frame.maxY, 10)
+        let button = try XCTUnwrap(panel.contentView?.subviews.first as? NSButton)
+        XCTAssertTrue(button.acceptsFirstMouse(for: nil))
+        XCTAssertNotNil(button.image)
+        XCTAssertEqual(button.menu?.items.first?.title, "Settings…")
+        button.performClick(nil)
+        XCTAssertEqual(clicks, 2)
+
+        launchers.update(LauncherPreferences(mode: .cornerButton, corner: .topRight))
+        XCTAssertNil(launchers.menuBarItem)
+        XCTAssertTrue(launchers.cornerPanel === panel)
+        XCTAssertGreaterThanOrEqual(visibleFrame.maxX, panel.frame.maxX)
+        XCTAssertLessThan(visibleFrame.maxX - panel.frame.maxX, 10)
+
+        launchers.update(LauncherPreferences())
+        XCTAssertNotNil(launchers.menuBarItem)
+        XCTAssertFalse(panel.isVisible)
+        XCTAssertNil(launchers.cornerPanel)
+    }
+
     func testSavedSettingsAndFavoritesRoundTrip() throws {
         let emoji = CharacterEntry(scalars: [0x1f469, 0x1f3fd, 0x200d, 0x1f4bb], name: "technologist")
         var prefs = Preferences()
@@ -233,7 +278,16 @@ final class GlyphDeskTests: XCTestCase {
         prefs.faceLayouts["TestFace"] = "Writing"
         prefs.layouts = [.example]
         prefs.perApp["example.editor"] = InsertionPreference(format: .html, pointSize: 13, imageSize: 512)
+        prefs.corner = .right
+        let legacy = try JSONDecoder().decode(Preferences.self, from: JSONEncoder().encode(prefs))
+        XCTAssertEqual(legacy.launcher, LauncherPreferences())
+        XCTAssertEqual(legacy.corner, .right)
+        XCTAssertEqual(legacy.favorites, [emoji])
+
+        prefs.launcher = LauncherPreferences(mode: .both, corner: .topRight)
         let decoded = try JSONDecoder().decode(Preferences.self, from: JSONEncoder().encode(prefs))
+        XCTAssertEqual(decoded.launcher, prefs.launcher)
+        XCTAssertEqual(decoded.corner, .right)
         XCTAssertEqual(decoded.favorites, [emoji])
         XCTAssertEqual(decoded.aliases[emoji.id], "work")
         XCTAssertEqual(decoded.layouts, [.example])

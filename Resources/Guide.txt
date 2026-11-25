@@ -1,6 +1,6 @@
 Glyph Desk
 
-Open the palette with the menu bar icon or Control–Option–Space. You can change the shortcut in Settings. Type a character, Unicode name, alias, keyword, entity or code point. The workspace adds Unicode groups, font sets, and detailed information.
+Open the palette with the menu bar icon or Control–Option–Space. In Settings, you can change the shortcut or show a clickable button in either upper corner of your primary display. Choose the menu bar icon, the corner button, or both. Type a character, Unicode name, alias, keyword, entity or code point. The workspace adds Unicode groups, font sets, and detailed information.
 
 Click a character to inspect it. Double-click or use Insert to send it to the displayed app. Choose a format beside Insert. Use Copy if macOS denies Accessibility access or the target field has changed.
 

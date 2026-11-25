@@ -90,7 +90,13 @@
 "Insertion" = "Einfügen";
 "Browsing" = "Durchsuchen";
 "Global shortcut" = "Globales Tastenkürzel";
-"Screen corner" = "Bildschirmecke";
+"Show Glyph Desk in" = "Glyph Desk anzeigen in";
+"Menu bar" = "Menüleiste";
+"Corner button" = "Eckschaltfläche";
+"Both" = "Beides";
+"Button position" = "Schaltflächenposition";
+"Hot corner (hover)" = "Aktive Ecke (Zeiger)";
+"Open Glyph Desk" = "Glyph Desk öffnen";
 "Off" = "Aus";
 "Top left" = "Oben links";
 "Top right" = "Oben rechts";
