@@ -270,6 +270,21 @@ final class GlyphDeskTests: XCTestCase {
         XCTAssertNil(launchers.cornerPanel)
     }
 
+    func testApplicationInstanceLockIsExclusiveAndCanBeReacquired() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        let lockURL = directory.appendingPathComponent("Glyph Desk.lock")
+        defer { try? FileManager.default.removeItem(at: directory) }
+
+        do {
+            let owner = try XCTUnwrap(ApplicationInstanceLock.acquire(at: lockURL))
+            let competingLock = try withExtendedLifetime(owner) {
+                try ApplicationInstanceLock.acquire(at: lockURL)
+            }
+            XCTAssertNil(competingLock)
+        }
+        XCTAssertNotNil(try ApplicationInstanceLock.acquire(at: lockURL))
+    }
+
     func testSavedSettingsAndFavoritesRoundTrip() throws {
         let emoji = CharacterEntry(scalars: [0x1f469, 0x1f3fd, 0x200d, 0x1f4bb], name: "technologist")
         var prefs = Preferences()

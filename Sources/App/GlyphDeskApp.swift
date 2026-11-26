@@ -3,7 +3,6 @@ import Carbon
 import ServiceManagement
 import SwiftUI
 
-@main
 struct GlyphDeskApp: App {
     @NSApplicationDelegateAdaptor(DeskDelegate.self) var delegate
 
@@ -57,8 +56,15 @@ final class DeskDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        show(compact: model.preferences.compactByDefault)
-        return true
+        if palette?.isVisible == true {
+            show(compact: true, retarget: false)
+        } else if workspace?.isVisible == true || workspace?.isMiniaturized == true {
+            workspace?.deminiaturize(nil)
+            show(compact: false, retarget: false)
+        } else {
+            show(compact: model.preferences.compactByDefault)
+        }
+        return false
     }
 
     func applicationWillTerminate(_ notification: Notification) {

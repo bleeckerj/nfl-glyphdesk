@@ -39,6 +39,7 @@
 		C8192EE5577A18615C738893 /* Unicode.txt in Resources */ = {isa = PBXBuildFile; fileRef = 392E37F453E2ED302DC82D9A /* Unicode.txt */; };
 		C9C35C83B9C3D239D53BF74B /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C43456A809E7D03142D2C7E /* libsqlite3.tbd */; };
 		CB9BD81FA0026FD4113B3DDC /* ShapeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349D43BB16401B9BD487D6CE /* ShapeSheet.swift */; };
+		D88161D5072DAFC2B13F36E6 /* GlyphDeskLaunch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2812D75E805879FA5E76ABFF /* GlyphDeskLaunch.swift */; };
 		EFEAD3826291DD8322CE6C3D /* SystemSymbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4006635ACAC167C740E227 /* SystemSymbols.swift */; };
 		F7869CF04D6542A776D86979 /* ProofOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1C722451F04CDE518CF209 /* ProofOutput.swift */; };
 		FB4C8B998B6034B0B0EC85A4 /* ActivationLaunchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6935A35F5B4C3E9F63663A6C /* ActivationLaunchers.swift */; };
@@ -67,6 +68,7 @@
 		1E7AD5851A3F1373E8CE8F9D /* KeyboardMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardMap.swift; sourceTree = "<group>"; };
 		2576BB045280395C248D2333 /* ShapeIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeIndex.swift; sourceTree = "<group>"; };
 		2598E5A787769C4F82C4CEDF /* GlyphDeskLookup */ = {isa = PBXFileReference; includeInIndex = 0; path = GlyphDeskLookup; sourceTree = BUILT_PRODUCTS_DIR; };
+		2812D75E805879FA5E76ABFF /* GlyphDeskLaunch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlyphDeskLaunch.swift; sourceTree = "<group>"; };
 		2D1C722451F04CDE518CF209 /* ProofOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProofOutput.swift; sourceTree = "<group>"; };
 		2FCA0E54312B7C5CACE399DA /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		31E0CA0CE6D960D2036563C2 /* Guide.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Guide.txt; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 				6935A35F5B4C3E9F63663A6C /* ActivationLaunchers.swift */,
 				99F3BF64172537D04B930603 /* DeskModel.swift */,
 				A0848CAB20DDF2A14AA11F1A /* GlyphDeskApp.swift */,
+				2812D75E805879FA5E76ABFF /* GlyphDeskLaunch.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -405,6 +408,7 @@
 				33B33225BB063317845A81E8 /* FontLibrary.swift in Sources */,
 				89CE90C7676819971C66A058 /* FontTableReader.swift in Sources */,
 				42024B0AD93A99656559ED1E /* GlyphDeskApp.swift in Sources */,
+				D88161D5072DAFC2B13F36E6 /* GlyphDeskLaunch.swift in Sources */,
 				2434CB9A6623314C3471C540 /* GlyphDrawing.swift in Sources */,
 				99F22CBD2866BFF08F7C7A03 /* Insertion.swift in Sources */,
 				B6A25DD7978D527FF1CBB401 /* KeyboardMap.swift in Sources */,
