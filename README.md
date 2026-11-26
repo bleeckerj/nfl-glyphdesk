@@ -2,7 +2,7 @@
 
 Glyph Desk is a lightweight, open-source alternative to PopChar™ for macOS. It is an independent Near Future Laboratory project for finding the right character, seeing how it looks in the fonts you have, and putting it into the app you’re working in. [PopChar by Ergonis](https://ergonis.com/en/popchar/)
 
-[Download Glyph Desk for macOS](https://github.com/bleeckerj/nfl-glyphdesk/releases/download/v1.0.0/GlyphDesk-macOS-universal.zip) · [Release notes](https://github.com/bleeckerj/nfl-glyphdesk/releases)
+[Download Glyph Desk for macOS](https://github.com/bleeckerj/nfl-glyphdesk/releases/download/v1.1.0/GlyphDesk-macOS-universal.zip) · [Release notes](https://github.com/bleeckerj/nfl-glyphdesk/releases)
 
 ## What you can do
 
