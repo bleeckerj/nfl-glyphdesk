@@ -71,12 +71,13 @@ final class DeskModel: ObservableObject {
 
     let standardLayouts = ["Unicode Blocks", "Scripts and Symbols", "Alphabet", "Emoji", "MacRoman", "SF Symbols"]
 
-    init() {
+    init(ephemeralPreferences: Preferences? = nil) {
         catalog = UnicodeCatalog()
         library = FontLibrary()
-        let read = Result { try Preferences.load() }
+        let read = Result { try ephemeralPreferences ?? Preferences.load() }
         let saved = (try? read.get()) ?? Preferences()
         preferences = saved
+        canPersistPreferences = ephemeralPreferences == nil
         scope = saved.lastScope
         selectedFace = library.faces.first { $0.id == saved.lastFace }
             ?? library.faces.first { $0.family == "Helvetica Neue" && $0.style == "Regular" }

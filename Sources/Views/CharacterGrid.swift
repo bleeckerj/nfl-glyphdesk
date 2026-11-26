@@ -7,6 +7,7 @@ struct CharacterGrid: View {
     @State private var hover: CharacterEntry?
 
     var body: some View {
+        let face = model.selectedFace
         GeometryReader { geometry in
             let tile = compact ? 44.0 : CGFloat(model.zoom + 12)
             let columnCount = max(1, Int((geometry.size.width - 22) / (tile + 3)))
@@ -14,7 +15,7 @@ struct CharacterGrid: View {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 12) {
                         ForEach(model.visibleGroups) { group in
-                            section(group, columns: columnCount, size: tile)
+                            section(group, face: face, columns: columnCount, size: tile)
                                 .id(group.id)
                         }
                         if model.visibleGroups.isEmpty || model.visibleGroups.allSatisfy({ $0.entries.isEmpty }) {
@@ -69,7 +70,7 @@ struct CharacterGrid: View {
         }
     }
 
-    private func section(_ group: CharacterGroup, columns: Int, size: Double) -> some View {
+    private func section(_ group: CharacterGroup, face: FontFace?, columns: Int, size: Double) -> some View {
         VStack(alignment: .leading, spacing: 5) {
             Button {
                 model.toggleFold(group.id, all: NSEvent.modifierFlags.contains(.option))
@@ -95,8 +96,7 @@ struct CharacterGrid: View {
                 }
             }
             if !model.foldedGroups.contains(group.id) {
-                let selected = model.selectedFace
-                let coverage = selected.map(model.library.support)
+                let coverage = face.map(model.library.support)
                 let favorites = Set(model.preferences.favorites.map(\.id))
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 3), count: columns), spacing: 3) {
                     ForEach(group.entries.indices, id: \.self) { index in
@@ -105,7 +105,7 @@ struct CharacterGrid: View {
                         let missing = !native && entry.symbolName == nil && entry.scalars.first.flatMap(Unicode.Scalar.init).map {
                             model.installedCoverage?.contains($0) == false
                         } == true
-                        CharacterTile(entry: entry, face: selected, selected: model.selection?.id == entry.id,
+                        CharacterTile(entry: entry, face: face, selected: model.selection?.id == entry.id,
                                       favorite: favorites.contains(entry.id), native: native, missing: missing, size: size)
                             .onTapGesture(count: 2) { model.selection = entry; model.insert(entry) }
                             .onTapGesture { model.selection = entry }
@@ -123,6 +123,8 @@ struct CharacterGrid: View {
                             }
                     }
                 }
+                // Shared characters can keep their old AppKit views when the selected face changes.
+                .id(face?.id)
             }
         }
     }

@@ -1,4 +1,5 @@
 import AppKit
+import Combine
 import PDFKit
 import SwiftUI
 import XCTest
@@ -191,6 +192,68 @@ final class GlyphDeskTests: XCTestCase {
                                       category: "Unencoded", faceName: face.id, glyphID: glyph)
         let index = ShapeIndex.build(entries: [unmapped], fonts: library, preferred: face, selectedFaceOnly: true)
         XCTAssertEqual(index.map(\.entry).first, unmapped)
+    }
+
+    @MainActor
+    func testBrowseTilesUpdateAcrossFontSwitches() async throws {
+        let model = DeskModel(ephemeralPreferences: Preferences())
+        let lucida = try XCTUnwrap(model.library.faces.first { $0.id == "LucidaGrande" })
+        let lucidaBold = try XCTUnwrap(model.library.faces.first { $0.id == "LucidaGrande-Bold" })
+        let luminari = try XCTUnwrap(model.library.faces.first { $0.id == "Luminari-Regular" })
+        let noteworthy = try XCTUnwrap(model.library.faces.first { $0.id == "Noteworthy-Bold" })
+        let macula = model.library.faces.first { $0.id == "Macula-Line" }
+        let magistral = model.library.faces.first { $0.id == "MagistralCond-Bold" }
+        let faces = [luminari, lucida, macula, magistral, noteworthy, lucida, lucidaBold, luminari].compactMap { $0 }
+        let characters: Set<[UInt32]> = [[0x23], [0x41], [0x46], [0x51], [0x66]]
+        let frame = CGRect(x: 0, y: 0, width: 540, height: 840)
+        let host = NSHostingView(rootView: CharacterGrid(model: model, compact: false))
+        let window = NSWindow(contentRect: frame, styleMask: .borderless, backing: .buffered, defer: false)
+        window.contentView = host
+        defer { window.contentView = nil }
+
+        func sampleTiles(in view: NSView) -> [GlyphCanvasView] {
+            if let tile = view as? GlyphCanvasView, let entry = tile.entry, characters.contains(entry.scalars) {
+                return [tile]
+            }
+            return view.subviews.flatMap { sampleTiles(in: $0) }
+        }
+
+        var updates = 0
+        let observation = model.$visibleGroups.dropFirst().sink { groups in
+            if groups.contains(where: { $0.title == "Basic Latin" }) { updates += 1 }
+        }
+        defer { observation.cancel() }
+        model.pickScope(.face)
+        model.pickLayout("Unicode Blocks")
+        var previousImages = [[UInt32]: Data]()
+        for face in faces {
+            let priorUpdate = updates
+            model.pickFace(face)
+            let deadline = ContinuousClock.now + .seconds(4)
+            var displayed: [GlyphCanvasView]
+            repeat {
+                try await Task.sleep(nanoseconds: 20_000_000)
+                host.layoutSubtreeIfNeeded()
+                displayed = sampleTiles(in: host)
+                if updates > priorUpdate && displayed.count == characters.count && displayed.allSatisfy({ $0.face == face }) {
+                    break
+                }
+            } while ContinuousClock.now < deadline
+
+            XCTAssertGreaterThan(updates, priorUpdate, face.id)
+            XCTAssertEqual(displayed.count, characters.count, face.id)
+            XCTAssertEqual(Set(displayed.compactMap { $0.entry?.scalars }), characters, face.id)
+            XCTAssertEqual(Set(displayed.map(\.face)), [face], face.id)
+            for tile in displayed {
+                let entry = try XCTUnwrap(tile.entry)
+                let bitmap = try XCTUnwrap(tile.bitmapImageRepForCachingDisplay(in: tile.bounds))
+                tile.cacheDisplay(in: tile.bounds, to: bitmap)
+                let image = try XCTUnwrap(bitmap.representation(using: .png, properties: [:]))
+                if let previous = previousImages.updateValue(image, forKey: entry.scalars) {
+                    XCTAssertNotEqual(previous, image, "\(face.id) \(entry.codes)")
+                }
+            }
+        }
     }
 
     @MainActor
