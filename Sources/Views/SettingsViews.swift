@@ -55,9 +55,14 @@ struct DeskSettings: View {
                 .onChange(of: model.preferences.corner) { _ in delegate.configureActivation() }
                 Toggle("Launch at login", isOn: $login)
                     .onChange(of: login) { delegate.setLogin($0) }
-                Toggle("Open the compact palette", isOn: $model.preferences.compactByDefault)
-                Toggle("Keep the palette open after insertion", isOn: $model.preferences.keepPaletteOpen)
             }
+            Section("Windows") {
+                Toggle("Open the compact palette", isOn: $model.preferences.compactByDefault)
+                Toggle("Float the compact palette above other windows", isOn: $model.preferences.windows.floatPalette)
+                Toggle("Float the workspace above other windows", isOn: $model.preferences.windows.floatWorkspace)
+                Toggle("Keep Glyph Desk open after insertion", isOn: $model.preferences.keepPaletteOpen)
+            }
+            .onChange(of: model.preferences.windows) { _ in delegate.configureWindows() }
             Section("Insertion") {
                 Picker("HTML references", selection: $model.preferences.htmlStyle) {
                     ForEach(EntityStyle.allCases) { style in

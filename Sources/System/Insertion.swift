@@ -92,7 +92,7 @@ final class InsertionService {
         _ = AXIsProcessTrustedWithOptions(options as CFDictionary)
     }
 
-    func insert(_ payload: PastePayload, into target: InsertionTarget?, dismiss: () -> Void) async -> InsertionResult {
+    func insert(_ payload: PastePayload, into target: InsertionTarget?, onPosted: () -> Void) async -> InsertionResult {
         guard !busy else { return .copyRequired("Wait for the current insertion to finish.") }
         busy = true
         defer { busy = false }
@@ -110,12 +110,14 @@ final class InsertionService {
               let up = CGEvent(keyboardEventSource: nil, virtualKey: 9, keyDown: false) else {
             return .copyRequired("A paste event could not be created.")
         }
-        dismiss()
         _ = target.app.activate(options: [])
+        func targetHasFocus() -> Bool {
+            NSWorkspace.shared.frontmostApplication?.processIdentifier == target.app.processIdentifier
+                && target.matchesFocus()
+        }
         var ready = false
         for _ in 0..<20 {
-            if NSWorkspace.shared.frontmostApplication?.processIdentifier == target.app.processIdentifier,
-               target.matchesFocus() {
+            if targetHasFocus() {
                 ready = true
                 break
             }
@@ -132,10 +134,15 @@ final class InsertionService {
         }
 
         let ownedChange = clipboard.changeCount
+        guard targetHasFocus(), clipboard.changeCount == ownedChange else {
+            snapshot.restore(to: clipboard, ownedChange: ownedChange)
+            return .copyRequired("The destination or clipboard changed. Check the destination or use Copy.")
+        }
         down.flags = .maskCommand
         up.flags = .maskCommand
         down.postToPid(target.app.processIdentifier)
         up.postToPid(target.app.processIdentifier)
+        onPosted()
         try? await Task.sleep(nanoseconds: 450_000_000)
         snapshot.restore(to: clipboard, ownedChange: ownedChange)
         return .posted

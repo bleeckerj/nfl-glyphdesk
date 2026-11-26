@@ -7,10 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		043E31D293C674EF5FE8B352 /* FontReviewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ABEF5C045EDA34A8C6901E4 /* FontReviewModel.swift */; };
 		0AB742C53007906EBBCADB19 /* ShapeIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2576BB045280395C248D2333 /* ShapeIndex.swift */; };
 		14307E61248386190B2A2732 /* Guide.txt in Resources */ = {isa = PBXBuildFile; fileRef = 31E0CA0CE6D960D2036563C2 /* Guide.txt */; };
 		2016BE68FE186CBC7EA77F1D /* BrowserViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EF3C7486AEEDA1F84E27E71 /* BrowserViews.swift */; };
 		2434CB9A6623314C3471C540 /* GlyphDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0131C967B92FFD77AF54395 /* GlyphDrawing.swift */; };
+		261FBE8453C1F632F0502FAC /* FontReviewProject.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B3F96D3A85193B397E4EC7 /* FontReviewProject.swift */; };
+		2BF82F1979BE0F390D2F7DD7 /* ReviewTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32337DCB8024D1F554D31671 /* ReviewTypography.swift */; };
 		3198B8CE84308DC20E5B1CBA /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FCA0E54312B7C5CACE399DA /* Preferences.swift */; };
 		33B33225BB063317845A81E8 /* FontLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E924C0B16E63DA700104CD1 /* FontLibrary.swift */; };
 		38F2CDF1E0F077EAFE933F97 /* CharacterGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2BECB243470CBB5505FBEB /* CharacterGrid.swift */; };
@@ -19,28 +22,38 @@
 		445EB35F9D16C4477D4C8DE4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 57FF41B90C0BD4E8FE925076 /* Localizable.strings */; };
 		45B712E321171A85FD2D9183 /* DeskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99F3BF64172537D04B930603 /* DeskModel.swift */; };
 		46F2DB28A3D73B1A10CD2F23 /* SettingsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B7AAEC5EFFD4E4A00CC91D /* SettingsViews.swift */; };
+		4D33E0A82CDF21D52A55D02C /* FontReviewFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DA79306C8E77AD3C933572 /* FontReviewFonts.swift */; };
+		4E62619548CFA0FE95090792 /* ReviewCoverage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5300CDAC1F8AC8D3D712587 /* ReviewCoverage.swift */; };
 		52E810FD7E7E1CFCABD224BD /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C43456A809E7D03142D2C7E /* libsqlite3.tbd */; };
 		58109E36C5DAB3E255EF1BEE /* UnicodeCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCE3D575F22A2D554275F6E /* UnicodeCatalog.swift */; };
 		5FC89F3F23E8D3795613DFF8 /* ThirdPartyNotices.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8ADC5BA5CFD15B33979052F1 /* ThirdPartyNotices.txt */; };
 		628732A6BB5C242341100B43 /* CharacterEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8D89CF34AD78B433B8FBF4 /* CharacterEntry.swift */; };
 		675F473B9BF03AC6B37CD114 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = B083038D5C859A4BC0AFEDEE /* LICENSE */; };
 		80928AF0E11458FC49FADB40 /* CharacterEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8D89CF34AD78B433B8FBF4 /* CharacterEntry.swift */; };
+		812A1843485B6D85E5E8FFA1 /* ReviewCandidateProof.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D87B6373E21461081ADACF3 /* ReviewCandidateProof.swift */; };
 		89CE90C7676819971C66A058 /* FontTableReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5557340EE36DEBD86667D00 /* FontTableReader.swift */; };
 		987FB471C10B3139C0135B13 /* UnicodeCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCE3D575F22A2D554275F6E /* UnicodeCatalog.swift */; };
+		98F6477D20E92A7EEB82EE38 /* ProjectProofCandidateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF2BCFD8FB01925B53A6BA2 /* ProjectProofCandidateView.swift */; };
 		99F22CBD2866BFF08F7C7A03 /* Insertion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8F9030A925B9D39A49F152C /* Insertion.swift */; };
 		9AFD8AC131C0CAA933F68F78 /* WHATWG-HTML.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6CF57EC5A93108E1C34902E4 /* WHATWG-HTML.txt */; };
 		9B00E04CD5118BCB22C9363C /* CharacterInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F6CF87580269304B9AF117B /* CharacterInspector.swift */; };
+		9E3BBF1F7C3FB5D11E270B24 /* ReviewSpecimen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F63AE0B8922BDAA421A8DF1 /* ReviewSpecimen.swift */; };
 		A0A054ABE0C71D14F2FBB0CD /* LayoutDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB261E399F3D1427BE01FB42 /* LayoutDocument.swift */; };
 		AA668AA16D1E3CE72DE9ECE5 /* BrowseData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944287E09DA731575D8DEAB3 /* BrowseData.swift */; };
 		ABCC4B013B24CF34383B052B /* TypeViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB3D86BC8C31E208B576344 /* TypeViews.swift */; };
 		AD60572C3952C6584B0F136F /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4ED65C8AB3754A3B581AEB6 /* Carbon.framework */; };
 		B6A25DD7978D527FF1CBB401 /* KeyboardMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E7AD5851A3F1373E8CE8F9D /* KeyboardMap.swift */; };
 		C2A5351E46669DADD770C9F2 /* GlyphDeskTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48713861C9C1D66DEA74651 /* GlyphDeskTests.swift */; };
+		C464AED86BA1719299E24260 /* FontReviewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E005D1257E57AE50D80EEF2 /* FontReviewTests.swift */; };
 		C8192EE5577A18615C738893 /* Unicode.txt in Resources */ = {isa = PBXBuildFile; fileRef = 392E37F453E2ED302DC82D9A /* Unicode.txt */; };
 		C9C35C83B9C3D239D53BF74B /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C43456A809E7D03142D2C7E /* libsqlite3.tbd */; };
 		CB9BD81FA0026FD4113B3DDC /* ShapeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349D43BB16401B9BD487D6CE /* ShapeSheet.swift */; };
 		D88161D5072DAFC2B13F36E6 /* GlyphDeskLaunch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2812D75E805879FA5E76ABFF /* GlyphDeskLaunch.swift */; };
+		DA02D3C8F85EFFD17A5031B4 /* ReviewFilePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFA99B584DE6C8AAF405E61B /* ReviewFilePicker.swift */; };
+		E15172EE8F164B79FDE6F715 /* ReviewProjectExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99B38C6958EDAF121A13A81 /* ReviewProjectExport.swift */; };
+		EEDCCE66F65F4A88753D04A4 /* ReviewTypographyControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF13754CE6F1F7724764D129 /* ReviewTypographyControls.swift */; };
 		EFEAD3826291DD8322CE6C3D /* SystemSymbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4006635ACAC167C740E227 /* SystemSymbols.swift */; };
+		F219358F82CA7BE39A3370A5 /* ProjectProofView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9AE895D84A0A5BBFA5CF95A /* ProjectProofView.swift */; };
 		F7869CF04D6542A776D86979 /* ProofOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1C722451F04CDE518CF209 /* ProofOutput.swift */; };
 		FB4C8B998B6034B0B0EC85A4 /* ActivationLaunchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6935A35F5B4C3E9F63663A6C /* ActivationLaunchers.swift */; };
 /* End PBXBuildFile section */
@@ -69,17 +82,24 @@
 		2576BB045280395C248D2333 /* ShapeIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeIndex.swift; sourceTree = "<group>"; };
 		2598E5A787769C4F82C4CEDF /* GlyphDeskLookup */ = {isa = PBXFileReference; includeInIndex = 0; path = GlyphDeskLookup; sourceTree = BUILT_PRODUCTS_DIR; };
 		2812D75E805879FA5E76ABFF /* GlyphDeskLaunch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlyphDeskLaunch.swift; sourceTree = "<group>"; };
+		2ABEF5C045EDA34A8C6901E4 /* FontReviewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontReviewModel.swift; sourceTree = "<group>"; };
 		2D1C722451F04CDE518CF209 /* ProofOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProofOutput.swift; sourceTree = "<group>"; };
 		2FCA0E54312B7C5CACE399DA /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		31E0CA0CE6D960D2036563C2 /* Guide.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Guide.txt; sourceTree = "<group>"; };
+		32337DCB8024D1F554D31671 /* ReviewTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewTypography.swift; sourceTree = "<group>"; };
 		349D43BB16401B9BD487D6CE /* ShapeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeSheet.swift; sourceTree = "<group>"; };
 		392E37F453E2ED302DC82D9A /* Unicode.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Unicode.txt; sourceTree = "<group>"; };
 		3DCE3D575F22A2D554275F6E /* UnicodeCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnicodeCatalog.swift; sourceTree = "<group>"; };
+		4CF2BCFD8FB01925B53A6BA2 /* ProjectProofCandidateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectProofCandidateView.swift; sourceTree = "<group>"; };
+		4D87B6373E21461081ADACF3 /* ReviewCandidateProof.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewCandidateProof.swift; sourceTree = "<group>"; };
+		4E005D1257E57AE50D80EEF2 /* FontReviewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontReviewTests.swift; sourceTree = "<group>"; };
+		54DA79306C8E77AD3C933572 /* FontReviewFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontReviewFonts.swift; sourceTree = "<group>"; };
 		6935A35F5B4C3E9F63663A6C /* ActivationLaunchers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationLaunchers.swift; sourceTree = "<group>"; };
 		6CF57EC5A93108E1C34902E4 /* WHATWG-HTML.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "WHATWG-HTML.txt"; sourceTree = "<group>"; };
 		6F2BECB243470CBB5505FBEB /* CharacterGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterGrid.swift; sourceTree = "<group>"; };
 		7C43456A809E7D03142D2C7E /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		7E924C0B16E63DA700104CD1 /* FontLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontLibrary.swift; sourceTree = "<group>"; };
+		7F63AE0B8922BDAA421A8DF1 /* ReviewSpecimen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewSpecimen.swift; sourceTree = "<group>"; };
 		7F6CF87580269304B9AF117B /* CharacterInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterInspector.swift; sourceTree = "<group>"; };
 		88418B6A4AD8C00C93C0FDD6 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		8ADC5BA5CFD15B33979052F1 /* ThirdPartyNotices.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ThirdPartyNotices.txt; sourceTree = "<group>"; };
@@ -96,12 +116,18 @@
 		B083038D5C859A4BC0AFEDEE /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
 		B48713861C9C1D66DEA74651 /* GlyphDeskTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlyphDeskTests.swift; sourceTree = "<group>"; };
 		B4ED65C8AB3754A3B581AEB6 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		B5300CDAC1F8AC8D3D712587 /* ReviewCoverage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewCoverage.swift; sourceTree = "<group>"; };
 		B8F9030A925B9D39A49F152C /* Insertion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Insertion.swift; sourceTree = "<group>"; };
+		C99B38C6958EDAF121A13A81 /* ReviewProjectExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewProjectExport.swift; sourceTree = "<group>"; };
 		D5557340EE36DEBD86667D00 /* FontTableReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontTableReader.swift; sourceTree = "<group>"; };
+		D9AE895D84A0A5BBFA5CF95A /* ProjectProofView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectProofView.swift; sourceTree = "<group>"; };
 		DB8D89CF34AD78B433B8FBF4 /* CharacterEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterEntry.swift; sourceTree = "<group>"; };
 		DCB3D86BC8C31E208B576344 /* TypeViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeViews.swift; sourceTree = "<group>"; };
 		DD4006635ACAC167C740E227 /* SystemSymbols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSymbols.swift; sourceTree = "<group>"; };
+		EF13754CE6F1F7724764D129 /* ReviewTypographyControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewTypographyControls.swift; sourceTree = "<group>"; };
 		F0BB976B404F503907987187 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F1B3F96D3A85193B397E4EC7 /* FontReviewProject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontReviewProject.swift; sourceTree = "<group>"; };
+		FFA99B584DE6C8AAF405E61B /* ReviewFilePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewFilePicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +175,7 @@
 			children = (
 				944287E09DA731575D8DEAB3 /* BrowseData.swift */,
 				DB8D89CF34AD78B433B8FBF4 /* CharacterEntry.swift */,
+				F1B3F96D3A85193B397E4EC7 /* FontReviewProject.swift */,
 				AB261E399F3D1427BE01FB42 /* LayoutDocument.swift */,
 				2FCA0E54312B7C5CACE399DA /* Preferences.swift */,
 				3DCE3D575F22A2D554275F6E /* UnicodeCatalog.swift */,
@@ -168,6 +195,7 @@
 		509F7A96D333F32F56F17119 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				4E005D1257E57AE50D80EEF2 /* FontReviewTests.swift */,
 				B48713861C9C1D66DEA74651 /* GlyphDeskTests.swift */,
 			);
 			path = Tests;
@@ -220,11 +248,17 @@
 			isa = PBXGroup;
 			children = (
 				7E924C0B16E63DA700104CD1 /* FontLibrary.swift */,
+				54DA79306C8E77AD3C933572 /* FontReviewFonts.swift */,
 				D5557340EE36DEBD86667D00 /* FontTableReader.swift */,
 				B0131C967B92FFD77AF54395 /* GlyphDrawing.swift */,
 				B8F9030A925B9D39A49F152C /* Insertion.swift */,
 				1E7AD5851A3F1373E8CE8F9D /* KeyboardMap.swift */,
 				2D1C722451F04CDE518CF209 /* ProofOutput.swift */,
+				4D87B6373E21461081ADACF3 /* ReviewCandidateProof.swift */,
+				B5300CDAC1F8AC8D3D712587 /* ReviewCoverage.swift */,
+				C99B38C6958EDAF121A13A81 /* ReviewProjectExport.swift */,
+				7F63AE0B8922BDAA421A8DF1 /* ReviewSpecimen.swift */,
+				32337DCB8024D1F554D31671 /* ReviewTypography.swift */,
 				2576BB045280395C248D2333 /* ShapeIndex.swift */,
 				DD4006635ACAC167C740E227 /* SystemSymbols.swift */,
 			);
@@ -236,6 +270,7 @@
 			children = (
 				6935A35F5B4C3E9F63663A6C /* ActivationLaunchers.swift */,
 				99F3BF64172537D04B930603 /* DeskModel.swift */,
+				2ABEF5C045EDA34A8C6901E4 /* FontReviewModel.swift */,
 				A0848CAB20DDF2A14AA11F1A /* GlyphDeskApp.swift */,
 				2812D75E805879FA5E76ABFF /* GlyphDeskLaunch.swift */,
 			);
@@ -248,6 +283,10 @@
 				9EF3C7486AEEDA1F84E27E71 /* BrowserViews.swift */,
 				6F2BECB243470CBB5505FBEB /* CharacterGrid.swift */,
 				7F6CF87580269304B9AF117B /* CharacterInspector.swift */,
+				4CF2BCFD8FB01925B53A6BA2 /* ProjectProofCandidateView.swift */,
+				D9AE895D84A0A5BBFA5CF95A /* ProjectProofView.swift */,
+				FFA99B584DE6C8AAF405E61B /* ReviewFilePicker.swift */,
+				EF13754CE6F1F7724764D129 /* ReviewTypographyControls.swift */,
 				98B7AAEC5EFFD4E4A00CC91D /* SettingsViews.swift */,
 				349D43BB16401B9BD487D6CE /* ShapeSheet.swift */,
 				DCB3D86BC8C31E208B576344 /* TypeViews.swift */,
@@ -406,6 +445,9 @@
 				9B00E04CD5118BCB22C9363C /* CharacterInspector.swift in Sources */,
 				45B712E321171A85FD2D9183 /* DeskModel.swift in Sources */,
 				33B33225BB063317845A81E8 /* FontLibrary.swift in Sources */,
+				4D33E0A82CDF21D52A55D02C /* FontReviewFonts.swift in Sources */,
+				043E31D293C674EF5FE8B352 /* FontReviewModel.swift in Sources */,
+				261FBE8453C1F632F0502FAC /* FontReviewProject.swift in Sources */,
 				89CE90C7676819971C66A058 /* FontTableReader.swift in Sources */,
 				42024B0AD93A99656559ED1E /* GlyphDeskApp.swift in Sources */,
 				D88161D5072DAFC2B13F36E6 /* GlyphDeskLaunch.swift in Sources */,
@@ -414,7 +456,16 @@
 				B6A25DD7978D527FF1CBB401 /* KeyboardMap.swift in Sources */,
 				A0A054ABE0C71D14F2FBB0CD /* LayoutDocument.swift in Sources */,
 				3198B8CE84308DC20E5B1CBA /* Preferences.swift in Sources */,
+				98F6477D20E92A7EEB82EE38 /* ProjectProofCandidateView.swift in Sources */,
+				F219358F82CA7BE39A3370A5 /* ProjectProofView.swift in Sources */,
 				F7869CF04D6542A776D86979 /* ProofOutput.swift in Sources */,
+				812A1843485B6D85E5E8FFA1 /* ReviewCandidateProof.swift in Sources */,
+				4E62619548CFA0FE95090792 /* ReviewCoverage.swift in Sources */,
+				DA02D3C8F85EFFD17A5031B4 /* ReviewFilePicker.swift in Sources */,
+				E15172EE8F164B79FDE6F715 /* ReviewProjectExport.swift in Sources */,
+				9E3BBF1F7C3FB5D11E270B24 /* ReviewSpecimen.swift in Sources */,
+				2BF82F1979BE0F390D2F7DD7 /* ReviewTypography.swift in Sources */,
+				EEDCCE66F65F4A88753D04A4 /* ReviewTypographyControls.swift in Sources */,
 				46F2DB28A3D73B1A10CD2F23 /* SettingsViews.swift in Sources */,
 				0AB742C53007906EBBCADB19 /* ShapeIndex.swift in Sources */,
 				CB9BD81FA0026FD4113B3DDC /* ShapeSheet.swift in Sources */,
@@ -428,6 +479,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C464AED86BA1719299E24260 /* FontReviewTests.swift in Sources */,
 				C2A5351E46669DADD770C9F2 /* GlyphDeskTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

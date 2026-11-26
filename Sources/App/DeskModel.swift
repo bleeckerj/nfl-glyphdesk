@@ -51,9 +51,8 @@ final class DeskModel: ObservableObject {
 
     let catalog: UnicodeCatalog?
     let insertion = InsertionService()
+    let fontReviews = FontReviewModel()
     var dismissForInsert: (() -> Void)?
-    var reopenAfterInsert: ((Bool) -> Void)?
-    var paletteIsVisible: (() -> Bool)?
     var preferencesDidChange: (() -> Void)?
 
     private var entries: [CharacterEntry] = []
@@ -136,12 +135,21 @@ final class DeskModel: ObservableObject {
     var currentEncoding: String { selection.map(html) ?? "" }
 
     func open(over app: NSRunningApplication?) {
-        target = InsertionTarget.capture(app)
+        updateInsertionTarget(over: app)
         message = nil
         if let target, let id = preferences.perApp[target.key]?.font ?? target.documentFont(),
            let face = library.faces.first(where: { $0.id == id || $0.title == id }) {
             pickFace(face, rememberForTarget: false)
         }
+    }
+
+    func updateInsertionTarget(over app: NSRunningApplication?) {
+        let captured = InsertionTarget.capture(app)
+        // Some apps clear their AX focus while inactive. Insertion re-verifies any saved field.
+        if let captured, captured.element == nil, !captured.secure,
+           let target, target.element != nil,
+           target.app.processIdentifier == captured.app.processIdentifier { return }
+        target = captured
     }
 
     func pickFace(_ face: FontFace, rememberForTarget: Bool = true) {
@@ -404,22 +412,19 @@ final class DeskModel: ObservableObject {
             message = "This glyph has no text mapping. Choose Picture or Name."
             return
         }
-        let compact = paletteIsVisible?() ?? true
         let destination = target
         Task {
-            let result = await insertion.insert(payload, into: destination) { dismissForInsert?() }
+            let result = await insertion.insert(payload, into: destination) {
+                if !preferences.keepPaletteOpen { dismissForInsert?() }
+            }
             switch result {
             case .posted:
                 preferences.recents.removeAll { $0.id == entry.id }
                 preferences.recents.insert(entry, at: 0)
                 preferences.recents = Array(preferences.recents.prefix(preferences.recentLimit))
-                if preferences.keepPaletteOpen {
-                    reopenAfterInsert?(compact)
-                }
                 refresh()
             case .copyRequired(let reason):
                 message = reason
-                reopenAfterInsert?(compact)
             }
         }
     }

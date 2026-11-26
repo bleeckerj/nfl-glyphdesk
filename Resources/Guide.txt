@@ -4,11 +4,15 @@ Open the palette with the menu bar icon or Control–Option–Space. In Settings
 
 Click a character to inspect it. Double-click or use Insert to send it to the displayed app. Choose a format beside Insert. Use Copy if macOS denies Accessibility access or the target field has changed.
 
+Glyph Desk stays open when you switch apps and updates the destination shown beside Insert. In Settings under Windows, choose which views float above other apps and whether Glyph Desk stays open after insertion.
+
 Enable Accessibility in Settings for direct insertion. The app verifies and activates the destination before posting the paste. On macOS versions with pasteboard privacy controls, allow clipboard access for formatted text and pictures if you want Glyph Desk to restore the existing clipboard.
 
 The inspector can find look-alikes for the selected glyph. In Draw, include separate strokes and dots when you sketch a symbol. The first query may take longer while Glyph Desk indexes the installed fonts.
 
 Use Compare for a common baseline and font coverage. Use Proof for editable specimen text, font sizes, printing, and PDF export. Use Font Info to copy individual values or all available fields.
+
+Inside Proof, choose Project Proof to save a shortlist and named text samples. Add the selected installed face or open an OTF, TTF, or TTC file. Under each face, inspect the source, adjust the supported typography controls, and check the native, fallback, and missing text. Export a project proof PDF or a shortlist and coverage CSV.
 
 Open the workspace layout menu to create or import a layout or transfer Favorites. Layouts use UTF-8 text. Separate groups with blank lines, put the title first, and list characters, ranges or directives underneath. Accepted directives include BLOCK, BLOCK-OTHER, FIND, OTHER, and LIGATURES. Enclose multi-scalar sequences in square brackets. Use a dollar sign for hexadecimal and a number sign for decimal. Lines can contain double-slash comments.
 

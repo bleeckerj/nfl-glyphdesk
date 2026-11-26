@@ -285,6 +285,30 @@ final class GlyphDeskTests: XCTestCase {
         XCTAssertNotNil(try ApplicationInstanceLock.acquire(at: lockURL))
     }
 
+    @MainActor
+    func testWindowPersistenceIsIndependentOfFloatingLevel() async {
+        let frame = CGRect(x: 0, y: 0, width: 300, height: 200)
+        let palette = NSPanel(contentRect: frame, styleMask: [.titled], backing: .buffered, defer: false)
+        let workspace = NSWindow(contentRect: frame, styleMask: [.titled], backing: .buffered, defer: false)
+
+        let defaults = WindowPreferences()
+        DeskDelegate.applyWindowBehavior(to: palette, floating: defaults.floatPalette)
+        DeskDelegate.applyWindowBehavior(to: workspace, floating: defaults.floatWorkspace)
+        XCTAssertFalse(palette.hidesOnDeactivate)
+        XCTAssertFalse(workspace.hidesOnDeactivate)
+        XCTAssertTrue(palette.isFloatingPanel)
+        XCTAssertEqual(palette.level, .floating)
+        XCTAssertEqual(workspace.level, .normal)
+
+        DeskDelegate.applyWindowBehavior(to: palette, floating: false)
+        DeskDelegate.applyWindowBehavior(to: workspace, floating: true)
+        XCTAssertFalse(palette.hidesOnDeactivate)
+        XCTAssertFalse(workspace.hidesOnDeactivate)
+        XCTAssertFalse(palette.isFloatingPanel)
+        XCTAssertEqual(palette.level, .normal)
+        XCTAssertEqual(workspace.level, .floating)
+    }
+
     func testSavedSettingsAndFavoritesRoundTrip() throws {
         let emoji = CharacterEntry(scalars: [0x1f469, 0x1f3fd, 0x200d, 0x1f4bb], name: "technologist")
         var prefs = Preferences()
@@ -296,12 +320,18 @@ final class GlyphDeskTests: XCTestCase {
         prefs.corner = .right
         let legacy = try JSONDecoder().decode(Preferences.self, from: JSONEncoder().encode(prefs))
         XCTAssertEqual(legacy.launcher, LauncherPreferences())
+        XCTAssertEqual(legacy.windows, WindowPreferences())
+        XCTAssertFalse(legacy.keepPaletteOpen)
         XCTAssertEqual(legacy.corner, .right)
         XCTAssertEqual(legacy.favorites, [emoji])
 
         prefs.launcher = LauncherPreferences(mode: .both, corner: .topRight)
+        prefs.windows = WindowPreferences(floatPalette: false, floatWorkspace: true)
+        prefs.keepPaletteOpen = true
         let decoded = try JSONDecoder().decode(Preferences.self, from: JSONEncoder().encode(prefs))
         XCTAssertEqual(decoded.launcher, prefs.launcher)
+        XCTAssertEqual(decoded.windows, prefs.windows)
+        XCTAssertTrue(decoded.keepPaletteOpen)
         XCTAssertEqual(decoded.corner, .right)
         XCTAssertEqual(decoded.favorites, [emoji])
         XCTAssertEqual(decoded.aliases[emoji.id], "work")

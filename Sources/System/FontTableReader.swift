@@ -10,6 +10,21 @@ struct FontTableReader {
     let font: CTFont
     init(_ font: CTFont) { self.font = font }
 
+    func featureTags() -> Set<String> {
+        var tags: Set<String> = []
+        for tag: UInt32 in [0x47535542, 0x47504F53] {
+            guard let data = table(tag), let start = data.word(6), start > 0,
+                  let count = data.word(start) else { continue }
+            let first = start + 2
+            for index in 0..<min(count, max(0, (data.bytes.count - first) / 6)) {
+                let position = first + index * 6
+                let tag = data.bytes[position..<(position + 4)]
+                if let value = String(bytes: tag, encoding: .ascii) { tags.insert(value) }
+            }
+        }
+        return tags
+    }
+
     func ligatures() -> [Ligature] {
         guard let data = table(0x47535542),
               let start = data.word(8) else { return [] }

@@ -25,6 +25,7 @@ final class FontLibrary: @unchecked Sendable {
 
     let faces: [FontFace]
     let groups: [FontCollection]
+    private let descriptorsByName: [String: [CTFontDescriptor]]
     private let coverageLock = NSLock()
     private var allSupports: [FaceSupport]?
     private var combinedCoverage: CharacterSet?
@@ -32,15 +33,19 @@ final class FontLibrary: @unchecked Sendable {
     init() {
         let collection = CTFontCollectionCreateFromAvailableFonts(nil)
         let descriptors = CTFontCollectionCreateMatchingFontDescriptors(collection) as? [CTFontDescriptor] ?? []
+        var available: [String: [CTFontDescriptor]] = [:]
         var seen: Set<String> = []
         faces = descriptors.compactMap { descriptor -> FontFace? in
             let font = CTFontCreateWithFontDescriptor(descriptor, 14, nil)
             let name = CTFontCopyPostScriptName(font) as String
-            guard !name.isEmpty, seen.insert(name).inserted else { return nil }
+            guard !name.isEmpty else { return nil }
+            available[name, default: []].append(descriptor)
+            guard seen.insert(name).inserted else { return nil }
             return FontFace(id: name, family: CTFontCopyFamilyName(font) as String,
                             style: (CTFontCopyName(font, kCTFontStyleNameKey) as String?) ?? "Regular",
                             title: CTFontCopyDisplayName(font) as String)
         }.sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending }
+        descriptorsByName = available
 
         groups = NSFontCollection.allFontCollectionNames.compactMap { name in
             guard let collection = NSFontCollection(name: name) else { return nil }
@@ -50,6 +55,10 @@ final class FontLibrary: @unchecked Sendable {
     }
 
     var familyCount: Int { Set(faces.map(\.family)).count }
+
+    func installedFonts(named postScriptName: String, size: CGFloat) -> [CTFont] {
+        (descriptorsByName[postScriptName] ?? []).map { CTFontCreateWithFontDescriptor($0, size, nil) }
+    }
 
     func support(for face: FontFace) -> FaceSupport {
         let font = face.font(size: 24)

@@ -117,12 +117,15 @@ enum ProofOutput {
         operation?.run()
     }
 
-    private static func label(_ value: String, x: CGFloat, y: CGFloat, context: CGContext, size: CGFloat = 9) {
+    static func label(_ value: String, x: CGFloat, y: CGFloat, context: CGContext, size: CGFloat = 9,
+                      maxWidth: CGFloat? = nil) {
         let attribute = NSAttributedString.Key(kCTFontAttributeName as String)
-        let line = CTLineCreateWithAttributedString(NSAttributedString(string: value, attributes: [
-            attribute: CTFontCreateUIFontForLanguage(.system, size, nil)!
-        ]))
+        let attributes = [attribute: CTFontCreateUIFontForLanguage(.system, size, nil)!]
+        let line = CTLineCreateWithAttributedString(NSAttributedString(string: value, attributes: attributes))
+        let ellipsis = CTLineCreateWithAttributedString(NSAttributedString(string: "…", attributes: attributes))
+        let fitted = maxWidth.flatMap { CTLineCreateTruncatedLine(line, $0, .end, ellipsis) } ?? line
+        context.textMatrix = .identity
         context.textPosition = CGPoint(x: x, y: y)
-        CTLineDraw(line, context)
+        CTLineDraw(fitted, context)
     }
 }

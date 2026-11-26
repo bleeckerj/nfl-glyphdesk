@@ -9,6 +9,8 @@ Glyph Desk is a lightweight, open-source alternative to PopChar™ for macOS. It
 - Find symbols and emoji by name, keyword, code point, sketch, or visual similarity. Save frequent characters and give them your own names.
 - Browse Unicode blocks, scripts, emoji, custom layouts, or the actual glyphs in an installed font. Inspect a character’s name, encodings, keyboard equivalent, and font coverage.
 - Compare a character in two fonts on a shared baseline. Edit a sample proof at one size or several, look up font metadata, and print or save proofs and glyph sheets as PDFs.
+- Save font shortlists and named text samples in **Project Proof**. Compare installed faces and open OpenType or TrueType files directly, including collections. Adjust each font’s variable axes and supported OpenType features.
+- See which parts of a proof use the selected face, a fallback font, or a missing glyph. Export the proof as a PDF or save font metadata and coverage for each sample as a CSV.
 - Copy or insert plain or formatted text, HTML references, Swift escapes, decimal and hex codes, names, descriptions, or images. You can also copy a rendered glyph as PNG or PDF.
 
 ## Screenshots
@@ -35,6 +37,8 @@ Glyph Desk supports macOS 13 or later. The universal download includes Apple Sil
 
 In **Settings → Activation**, set **Show Glyph Desk in** to **Menu bar**, **Corner button**, or **Both**. With the corner button enabled, choose **Top left** or **Top right** under **Button position**. Right-click either launcher to open Settings, the workspace, or the palette.
 
+The palette and workspace stay open when you switch apps. In **Settings → Windows**, set their floating levels independently and choose whether Glyph Desk stays open after insertion.
+
 Copy is available immediately. To insert directly at the cursor in another app, grant Accessibility access in Glyph Desk’s Settings. On macOS versions with pasteboard privacy controls, allow clipboard access for restoring a previous clipboard after insertion.
 
 ## Building from source
@@ -57,4 +61,4 @@ To use the Typinator wrapper, add Scripts/GlyphDesk-Typinator.sh to Typinator’
 
 Glyph Desk’s source code is available under the [MIT License](LICENSE). The bundled Unicode 18.0, Emoji 18.0, CLDR 49, Unihan, and WHATWG named character references retain their own terms. See the [third-party notices](Resources/ThirdPartyNotices.txt) and [license texts](Resources/Licenses).
 
-Glyph Desk uses the fonts installed on your Mac.
+Glyph Desk uses the fonts installed on your Mac and font files you open in Project Proof.

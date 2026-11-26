@@ -43,6 +43,11 @@ struct LauncherPreferences: Codable, Equatable {
     var corner: CornerButtonPosition = .topLeft
 }
 
+struct WindowPreferences: Codable, Equatable {
+    var floatPalette = true
+    var floatWorkspace = false
+}
+
 struct Preferences: Codable {
     var favorites: [CharacterEntry] = []
     var recents: [CharacterEntry] = []
@@ -60,6 +65,7 @@ struct Preferences: Codable {
     var hotkey: HotkeyPreference? = HotkeyPreference()
     var corner: Corner = .off
     private var savedLauncher: LauncherPreferences?
+    private var savedWindows: WindowPreferences?
     var keepPaletteOpen = false
     var magnifier = false
     var compactByDefault = true
@@ -72,6 +78,11 @@ struct Preferences: Codable {
     var launcher: LauncherPreferences {
         get { savedLauncher ?? LauncherPreferences() }
         set { savedLauncher = newValue }
+    }
+
+    var windows: WindowPreferences {
+        get { savedWindows ?? WindowPreferences() }
+        set { savedWindows = newValue }
     }
 
     static var url: URL {

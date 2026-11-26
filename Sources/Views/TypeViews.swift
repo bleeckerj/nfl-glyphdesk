@@ -93,7 +93,7 @@ struct ComparisonView: View {
     }
 }
 
-struct ProofView: View {
+struct SingleFontProofView: View {
     @ObservedObject var model: DeskModel
     @State private var showEditor = false
     @State private var makingSheet = false

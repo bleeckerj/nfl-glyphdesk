@@ -12,7 +12,7 @@ struct GlyphDeskApp: App {
 }
 
 @MainActor
-final class DeskDelegate: NSObject, NSApplicationDelegate {
+final class DeskDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     lazy var model = DeskModel()
     private lazy var launchers = ActivationLaunchers(onOpen: { [weak self] in self?.toggleDefault() }) { [weak self] in
         self?.activationMenu() ?? NSMenu()
@@ -30,21 +30,17 @@ final class DeskDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
-        lastExternal = NSWorkspace.shared.frontmostApplication
+        _ = currentExternalApplication()
         applicationObserver = NSWorkspace.shared.notificationCenter.addObserver(
             forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main
         ) { [weak self] notice in
             let app = notice.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
             Task { @MainActor in
-                if let app, app.processIdentifier != ProcessInfo.processInfo.processIdentifier {
-                    self?.lastExternal = app
-                }
+                self?.externalAppActivated(app)
             }
         }
 
         model.dismissForInsert = { [weak self] in self?.hideWindows() }
-        model.reopenAfterInsert = { [weak self] compact in self?.show(compact: compact, retarget: false) }
-        model.paletteIsVisible = { [weak self] in self?.palette?.isVisible ?? false }
         configureLaunchers()
         configureActivation()
         localEvents = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
@@ -69,6 +65,7 @@ final class DeskDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         model.saveImmediately()
+        model.fontReviews.saveImmediately()
         launchers.close()
         if let localEvents { NSEvent.removeMonitor(localEvents) }
         if let applicationObserver { NSWorkspace.shared.notificationCenter.removeObserver(applicationObserver) }
@@ -78,6 +75,40 @@ final class DeskDelegate: NSObject, NSApplicationDelegate {
     func openWorkspace() { show(compact: false, retarget: false) }
     func openPalette() { show(compact: true, retarget: true) }
     func focusSearch(using action: @escaping () -> Void) { responseToSearch = action }
+
+    func windowDidBecomeKey(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow, window == palette || window == workspace else { return }
+        model.updateInsertionTarget(over: currentExternalApplication())
+    }
+
+    func configureWindows() {
+        let preferences = model.preferences.windows
+        if let palette { Self.applyWindowBehavior(to: palette, floating: preferences.floatPalette) }
+        if let workspace { Self.applyWindowBehavior(to: workspace, floating: preferences.floatWorkspace) }
+    }
+
+    static func applyWindowBehavior(to window: NSWindow, floating: Bool) {
+        if let panel = window as? NSPanel { panel.isFloatingPanel = floating }
+        window.hidesOnDeactivate = false
+        window.level = floating ? .floating : .normal
+    }
+
+    private func externalAppActivated(_ app: NSRunningApplication?) {
+        guard let app, app.processIdentifier != ProcessInfo.processInfo.processIdentifier else { return }
+        lastExternal = app
+        if palette?.isVisible == true || workspace?.isVisible == true {
+            model.updateInsertionTarget(over: currentExternalApplication())
+        }
+    }
+
+    private func currentExternalApplication() -> NSRunningApplication? {
+        if let frontmost = NSWorkspace.shared.frontmostApplication,
+           frontmost.processIdentifier != ProcessInfo.processInfo.processIdentifier {
+            lastExternal = frontmost
+        }
+        guard let lastExternal, !lastExternal.isTerminated else { return nil }
+        return lastExternal
+    }
 
     func settings() {
         if preferencesWindow == nil {
@@ -139,8 +170,16 @@ final class DeskDelegate: NSObject, NSApplicationDelegate {
     @objc private func quit() { NSApp.terminate(nil) }
 
     private func toggleDefault() {
-        if palette?.isKeyWindow == true || workspace?.isKeyWindow == true { hideWindows() }
-        else { show(compact: model.preferences.compactByDefault) }
+        if palette?.isKeyWindow == true || workspace?.isKeyWindow == true {
+            hideWindows()
+        } else if palette?.isVisible == true {
+            show(compact: true, retarget: false)
+        } else if workspace?.isVisible == true || workspace?.isMiniaturized == true {
+            workspace?.deminiaturize(nil)
+            show(compact: false, retarget: false)
+        } else {
+            show(compact: model.preferences.compactByDefault)
+        }
     }
 
     private func hideWindows() {
@@ -149,11 +188,11 @@ final class DeskDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func show(compact: Bool, retarget: Bool = true) {
-        if retarget {
-            let frontmost = NSWorkspace.shared.frontmostApplication
-            let current = frontmost?.processIdentifier == ProcessInfo.processInfo.processIdentifier
-                ? lastExternal : frontmost
+        let current = currentExternalApplication()
+        if retarget && palette?.isVisible != true && workspace?.isVisible != true {
             model.open(over: current)
+        } else {
+            model.updateInsertionTarget(over: current)
         }
         NSApp.activate(ignoringOtherApps: true)
         if compact {
@@ -165,8 +204,7 @@ final class DeskDelegate: NSObject, NSApplicationDelegate {
                 window.title = "Glyph Desk"
                 window.titleVisibility = .hidden
                 window.titlebarAppearsTransparent = true
-                window.isFloatingPanel = true
-                window.hidesOnDeactivate = !model.preferences.keepPaletteOpen
+                window.delegate = self
                 window.collectionBehavior = [.moveToActiveSpace, .fullScreenAuxiliary]
                 window.contentMinSize = CGSize(width: 410, height: 400)
                 window.isReleasedWhenClosed = false
@@ -175,7 +213,7 @@ final class DeskDelegate: NSObject, NSApplicationDelegate {
                 window.setFrameAutosaveName("Glyph Desk Palette")
                 palette = window
             }
-            palette?.hidesOnDeactivate = !model.preferences.keepPaletteOpen
+            configureWindows()
             palette?.makeKeyAndOrderFront(nil)
         } else {
             palette?.orderOut(nil)
@@ -184,6 +222,7 @@ final class DeskDelegate: NSObject, NSApplicationDelegate {
                                       styleMask: [.titled, .closable, .miniaturizable, .resizable],
                                       backing: .buffered, defer: false)
                 window.title = "Glyph Desk"
+                window.delegate = self
                 window.isReleasedWhenClosed = false
                 window.contentMinSize = CGSize(width: 840, height: 520)
                 window.contentViewController = NSHostingController(rootView: WorkspaceView(model: model, delegate: self))
@@ -191,6 +230,7 @@ final class DeskDelegate: NSObject, NSApplicationDelegate {
                 window.setFrameAutosaveName("Glyph Desk Workspace")
                 workspace = window
             }
+            configureWindows()
             workspace?.makeKeyAndOrderFront(nil)
         }
     }
